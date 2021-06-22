@@ -10,6 +10,11 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login')
 def login():
+    return render_template('login.html')
+
+
+@auth.route('/login', methods=['POST'])
+def login_post():
     user_name = request.form.get('user_name')
     password = request.form.get('password')
     remember = True if request.form.get('remember') else False
@@ -22,11 +27,8 @@ def login():
     
     login_user(user)
 
-    return render_template('login.html')
+    return redirect(url_for('main.profile'))
 
-
-#@auth.route('/login', methods=['POST'])
-#def login_post():
 
 @auth.route('/signup')
 def signup():
