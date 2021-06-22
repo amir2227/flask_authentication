@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask.globals import request
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user
+from flask_login import login_user, logout_user, login_required
 from .models import User
 from . import db
 
@@ -24,7 +24,7 @@ def login_post():
     if not user and not check_password_hash(user.password, password):
         flash('Please check your login details and try again')
         return redirect(url_for('auth.login'))
-    
+
     login_user(user)
 
     return redirect(url_for('main.profile'))
@@ -34,7 +34,8 @@ def login_post():
 def signup():
     return render_template('signup.html')
 
-@auth.route('/signup' , methods=['POST'])
+
+@auth.route('/signup', methods=['POST'])
 def signup_post():
     user_name = request.form.get('user_name')
     full_name = request.form.get('full_name')
@@ -51,6 +52,9 @@ def signup_post():
 
     return redirect(url_for('auth.login'))
 
+
 @auth.route('/logout')
+@login_required
 def logout():
+    logout_user()
     return redirect(url_for('main.index'))
